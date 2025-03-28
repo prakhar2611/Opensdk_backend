@@ -1,0 +1,765 @@
+{
+	"info": {
+		"_postman_id": "9f27e2a1-e8b4-48f9-8d6f-f01b423aaaff",
+		"name": "Agent & Orchestrator API",
+		"description": "API for managing and running AI agents and orchestrators with OpenAI function calling capabilities.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if the API is running properly."
+					},
+					"response": []
+				},
+				{
+					"name": "API Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Get general API information."
+					},
+					"response": []
+				}
+			],
+			"description": "General API endpoints for health checks and information."
+		},
+		{
+			"name": "Agents",
+			"item": [
+				{
+					"name": "Get All Agents",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if response is valid",
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // If we have agents, set the first one's ID as the agentId environment variable",
+									"    if (responseData && responseData.length > 0) {",
+									"        pm.environment.set('agentId', responseData[0].id);",
+									"        console.log('Set agentId environment variable to: ' + responseData[0].id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/agents/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agents",
+								""
+							]
+						},
+						"description": "Retrieve all agents."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/agents/{{agentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agents",
+								"{{agentId}}"
+							]
+						},
+						"description": "Retrieve a specific agent by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Agent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if response is valid",
+									"if (pm.response.code === 201) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // Set the new agent's ID as the agentId environment variable",
+									"    if (responseData && responseData.id) {",
+									"        pm.environment.set('agentId', responseData.id);",
+									"        console.log('Set agentId environment variable to: ' + responseData.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"ClickHouse Explorer\",\n  \"system_prompt\": \"You are an AI assistant that helps users explore ClickHouse database {database}.\",\n  \"additional_prompt\": \"Focus on providing clear explanations about database concepts.\",\n  \"selected_tools\": [\"describe_table\", \"run_query\", \"show_tables\"],\n  \"handoff\": false,\n  \"prompt_fields\": [\n    {\n      \"name\": \"database\",\n      \"description\": \"ClickHouse database name\",\n      \"default_value\": \"default\",\n      \"required\": true\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/agents/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agents",
+								""
+							]
+						},
+						"description": "Create a new agent with the provided configuration."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Agent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated ClickHouse Explorer\",\n  \"system_prompt\": \"You are an improved AI assistant that helps users explore ClickHouse database {database}.\",\n  \"additional_prompt\": \"Focus on providing clear and concise explanations about database concepts.\",\n  \"selected_tools\": [\"describe_table\", \"run_query\", \"show_tables\", \"show_databases\"],\n  \"handoff\": true,\n  \"prompt_fields\": [\n    {\n      \"name\": \"database\",\n      \"description\": \"ClickHouse database name\",\n      \"default_value\": \"system\",\n      \"required\": true\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/agents/{{agentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agents",
+								"{{agentId}}"
+							]
+						},
+						"description": "Update an existing agent by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Agent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/agents/{{agentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agents",
+								"{{agentId}}"
+							]
+						},
+						"description": "Delete an agent by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Tools",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/agents/tools/available",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agents",
+								"tools",
+								"available"
+							]
+						},
+						"description": "Get all available function tools for agents."
+					},
+					"response": []
+				},
+				{
+					"name": "Run Agent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_input\": \"Show me all tables in the database\",\n  \"prompt_field_values\": {\n    \"database\": \"default\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/agents/{{agentId}}/run",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agents",
+								"{{agentId}}",
+								"run"
+							]
+						},
+						"description": "Run an agent with user input and prompt field values."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing and running agents."
+		},
+		{
+			"name": "Orchestrators",
+			"item": [
+				{
+					"name": "Get All Orchestrators",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if response is valid",
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // If we have orchestrators, set the first one's ID as the orchestratorId environment variable",
+									"    if (responseData && responseData.length > 0) {",
+									"        pm.environment.set('orchestratorId', responseData[0].id);",
+									"        console.log('Set orchestratorId environment variable to: ' + responseData[0].id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								""
+							]
+						},
+						"description": "Retrieve all orchestrators."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orchestrator by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/{{orchestratorId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								"{{orchestratorId}}"
+							]
+						},
+						"description": "Retrieve a specific orchestrator by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Orchestrator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if response is valid",
+									"if (pm.response.code === 201) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // Set the new orchestrator's ID as the orchestratorId environment variable",
+									"    if (responseData && responseData.id) {",
+									"        pm.environment.set('orchestratorId', responseData.id);",
+									"        console.log('Set orchestratorId environment variable to: ' + responseData.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Get the current request body",
+									"let requestBody = JSON.parse(pm.request.body.raw);",
+									"",
+									"// Check if we have an agentId set in the environment",
+									"const agentId = pm.environment.get('agentId');",
+									"",
+									"// If we have an agentId and agents array is either empty or contains placeholder values",
+									"if (agentId && ",
+									"    (!requestBody.agents || ",
+									"     requestBody.agents.length === 0 || ",
+									"     requestBody.agents.includes('agent_id_1'))) {",
+									"    ",
+									"    // Update the agents array with the real agentId",
+									"    requestBody.agents = [agentId];",
+									"    ",
+									"    // Update the request body",
+									"    pm.request.body.raw = JSON.stringify(requestBody, null, 2);",
+									"    ",
+									"    console.log('Updated orchestrator request with actual agentId: ' + agentId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Database Analyzer\",\n  \"description\": \"Orchestrator that combines data analysis agents\",\n  \"agents\": [\"agent_id_1\"],\n  \"tools\": [\"search_documentation\"],\n  \"system_prompt\": \"You are an orchestrator that coordinates multiple agents to provide comprehensive database analysis.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								""
+							]
+						},
+						"description": "Create a new orchestrator with the provided configuration."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Orchestrator",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Get the current request body",
+									"let requestBody = JSON.parse(pm.request.body.raw);",
+									"",
+									"// Check if we have an agentId set in the environment",
+									"const agentId = pm.environment.get('agentId');",
+									"",
+									"// If we have an agentId and the agents array contains placeholder values",
+									"if (agentId && requestBody.agents && ",
+									"    (requestBody.agents.includes('agent_id_1') || ",
+									"     requestBody.agents.includes('agent_id_2') || ",
+									"     requestBody.agents.includes('agent_id_3'))) {",
+									"    ",
+									"    // Replace agent_id placeholders with the real agentId",
+									"    requestBody.agents = requestBody.agents.map(id => {",
+									"        if (id.startsWith('agent_id_')) {",
+									"            return agentId;",
+									"        }",
+									"        return id;",
+									"    });",
+									"    ",
+									"    // Update the request body",
+									"    pm.request.body.raw = JSON.stringify(requestBody, null, 2);",
+									"    ",
+									"    console.log('Updated orchestrator request with actual agentId: ' + agentId);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Database Analyzer\",\n  \"description\": \"Improved orchestrator that combines data analysis agents\",\n  \"agents\": [\"agent_id_1\", \"agent_id_2\", \"agent_id_3\"],\n  \"tools\": [\"search_documentation\", \"export_results\"],\n  \"system_prompt\": \"You are an enhanced orchestrator that coordinates multiple agents to provide comprehensive and detailed database analysis.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/{{orchestratorId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								"{{orchestratorId}}"
+							]
+						},
+						"description": "Update an existing orchestrator by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Orchestrator",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/{{orchestratorId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								"{{orchestratorId}}"
+							]
+						},
+						"description": "Delete an orchestrator by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Run Orchestrator",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_input\": \"Analyze the performance of our database and recommend optimizations\",\n  \"prompt_field_values\": {\n    \"database\": \"default\",\n    \"time_period\": \"last 7 days\"\n  },\n  \"save_history\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/{{orchestratorId}}/run",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								"{{orchestratorId}}",
+								"run"
+							]
+						},
+						"description": "Run an orchestrator with user input and prompt field values."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orchestrator History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/{{orchestratorId}}/history",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								"{{orchestratorId}}",
+								"history"
+							]
+						},
+						"description": "Get conversation history for an orchestrator."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing and running orchestrators."
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Get All Conversations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conversations/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conversations",
+								""
+							]
+						},
+						"description": "Retrieve a list of all available conversations."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversation by ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set conversation ID if not already set",
+									"if (!pm.environment.get('conversationId') && pm.environment.get('orchestratorId')) {",
+									"    pm.environment.set('conversationId', pm.environment.get('orchestratorId'));",
+									"    console.log('Using orchestratorId as conversationId: ' + pm.environment.get('conversationId'));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conversations/{{conversationId}}?limit=10&offset=0&sort=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conversations",
+								"{{conversationId}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Limit the number of messages returned"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Offset for pagination"
+								},
+								{
+									"key": "sort",
+									"value": "desc",
+									"description": "Sort order (asc or desc)"
+								},
+								{
+									"key": "start_date",
+									"value": "2023-01-01",
+									"description": "Filter messages after this date",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2023-12-31",
+									"description": "Filter messages before this date",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve conversation history by ID with optional filtering and pagination."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Conversations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conversations/search?query=clickhouse&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conversations",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "clickhouse",
+									"description": "Search term to look for in messages"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Maximum number of results to return"
+								}
+							]
+						},
+						"description": "Search all conversations for messages containing the specified query."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Conversation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set conversation ID if not already set",
+									"if (!pm.environment.get('conversationId') && pm.environment.get('orchestratorId')) {",
+									"    pm.environment.set('conversationId', pm.environment.get('orchestratorId'));",
+									"    console.log('Using orchestratorId as conversationId: ' + pm.environment.get('conversationId'));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conversations/{{conversationId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conversations",
+								"{{conversationId}}"
+							]
+						},
+						"description": "Delete a conversation history file."
+					},
+					"response": []
+				},
+				{
+					"name": "Clear Conversation Messages",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set conversation ID if not already set",
+									"if (!pm.environment.get('conversationId') && pm.environment.get('orchestratorId')) {",
+									"    pm.environment.set('conversationId', pm.environment.get('orchestratorId'));",
+									"    console.log('Using orchestratorId as conversationId: ' + pm.environment.get('conversationId'));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/conversations/{{conversationId}}/messages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"conversations",
+								"{{conversationId}}",
+								"messages"
+							]
+						},
+						"description": "Clear all messages from a conversation but keep the file."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for retrieving and managing conversation history."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string",
+			"description": "Base URL for the API"
+		},
+		{
+			"key": "agentId",
+			"value": "",
+			"type": "string",
+			"description": "ID of an agent to use for operations"
+		},
+		{
+			"key": "orchestratorId",
+			"value": "",
+			"type": "string",
+			"description": "ID of an orchestrator to use for operations"
+		},
+		{
+			"key": "conversationId",
+			"value": "",
+			"type": "string",
+			"description": "ID of a conversation to use for operations (usually the same as orchestratorId)"
+		}
+	]
+} 
