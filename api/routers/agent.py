@@ -34,6 +34,7 @@ def agent_to_response(agent_id: str, agent_data: Dict[str, Any]) -> AgentRespons
     return AgentResponse(
         id=agent_id,
         name=agent_data["name"],
+        description=agent_data.get("description", ""),
         system_prompt=agent_data["system_prompt"],
         additional_prompt=agent_data.get("additional_prompt", ""),
         selected_tools=agent_data["selected_tools"],
@@ -78,6 +79,7 @@ async def create_agent(agent: AgentCreate):
     new_agent = Agent(
         id=agent_id,
         name=agent.name,
+        description=agent.description,
         system_prompt=agent.system_prompt,
         additional_prompt=agent.additional_prompt,
         selected_tools=agent.selected_tools,
@@ -111,6 +113,8 @@ async def update_agent(
     # Update fields if provided
     if agent.name is not None:
         agent_data["name"] = agent.name
+    if agent.description is not None:
+        agent_data["description"] = agent.description
     if agent.system_prompt is not None:
         agent_data["system_prompt"] = agent.system_prompt
     if agent.additional_prompt is not None:

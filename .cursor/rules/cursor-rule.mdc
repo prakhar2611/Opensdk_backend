@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- do not do any changes on the 'experiments' folder, that is only for reference purpose.
+- 

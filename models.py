@@ -16,6 +16,7 @@ class PromptField(BaseModel):
 class Agent(BaseModel):
     id: str
     name: str
+    description: Optional[str] = ""
     system_prompt: str
     additional_prompt: Optional[str] = ""
     selected_tools: List[str]
@@ -26,6 +27,7 @@ class Agent(BaseModel):
         return {
             "id": self.id,
             "name": self.name,
+            "description": self.description,
             "system_prompt": self.system_prompt,
             "additional_prompt": self.additional_prompt,
             "selected_tools": self.selected_tools,
@@ -42,6 +44,7 @@ class Agent(BaseModel):
         return cls(
             id=data["id"],
             name=data["name"],
+            description=data.get("description", ""),
             system_prompt=data["system_prompt"],
             additional_prompt=data.get("additional_prompt", ""),
             selected_tools=data["selected_tools"],

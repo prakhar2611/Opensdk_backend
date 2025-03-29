@@ -10,6 +10,7 @@ class PromptFieldCreate(BaseModel):
 
 class AgentCreate(BaseModel):
     name: str
+    description: Optional[str] = ""
     system_prompt: str
     additional_prompt: Optional[str] = ""
     selected_tools: List[str]
@@ -18,6 +19,7 @@ class AgentCreate(BaseModel):
 
 class AgentUpdate(BaseModel):
     name: Optional[str] = None
+    description: Optional[str] = None
     system_prompt: Optional[str] = None
     additional_prompt: Optional[str] = None
     selected_tools: Optional[List[str]] = None
@@ -27,6 +29,7 @@ class AgentUpdate(BaseModel):
 class AgentResponse(BaseModel):
     id: str
     name: str
+    description: Optional[str] = ""
     system_prompt: str
     additional_prompt: Optional[str] = ""
     selected_tools: List[str]

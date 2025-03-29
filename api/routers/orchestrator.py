@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Optional
 import os
 import sys
 import asyncio
+from runner.orchestrator import OrchestratorModelExecutor
 
 # Add the parent directory to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -159,21 +160,20 @@ async def run_orchestrator(
         raise HTTPException(status_code=404, detail="Orchestrator not found")
     
     try:
+        orchestrator_executor = OrchestratorModelExecutor()
         # Run orchestrator
-        result = await run_orchestrator_by_id(
-            orchestrator_id=orchestrator_id,
-            user_input=run_request.user_input,
-            user_values=run_request.prompt_field_values,
-            save_history=run_request.save_history
+        result = await orchestrator_executor.run_orchestrator_Id(
+            orchestratorId=orchestrator_id,
+            user_input=run_request.user_input
         )
         
         return RunResponse(
-            response=result.get("response", ""),
+            response=result,
             execution_details={
                 "orchestrator_id": orchestrator_id,
                 "orchestrator_name": orchestrators_data[orchestrator_id]["name"],
-                "agent_calls": result.get("agent_calls", []),
-                "execution_log": result.get("execution_log", [])
+                # "agent_calls": result.get("agent_calls", []),
+                # "execution_log": result.get("execution_log", [])
             }
         )
         
