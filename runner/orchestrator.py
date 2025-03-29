@@ -2,6 +2,8 @@ import os
 from typing import Dict, List, Any
 
 from agents import Agent, RunConfig, Runner, function_tool
+
+from runner.modelProvider import CustomModelProvider
 from .agent import AgentModelExecutor
 import logger
 from utils import load_agents, load_orchestrators
@@ -17,14 +19,17 @@ class OrchestratorModelExecutor:
 
     def __init__(self):
         """Initialize the agent executor"""
-        # Check for OpenAI API key
-        if not os.getenv("OPENAI_API_KEY"):
-            logger.error("OPENAI_API_KEY not found in environment variables")
-            raise ValueError("OPENAI_API_KEY not found in environment variables")
-        
+       
         # Setup SSL bypass
         self.http_client = setup_ssl_bypass()
         logger.info("SSL bypass setup completed for agent executor")
+        self.isOpenAI = os.getenv("IS_OPENAI") == "true"
+
+    def modelProvider(self):
+        if self.isOpenAI is False:
+            return CustomModelProvider()
+        
+        return None
 
     def initialize_orchestrator_model(self, orchestratorId: str) -> Orchestrator:
         """Initialize the orchestrator
@@ -99,12 +104,17 @@ class OrchestratorModelExecutor:
             orchestrator_model = self.initialize_orchestrator_model(orchestratorId)
             orchestrator = self.create_orchestrator_from_data(orchestrator_model)
 
+            runConfig = RunConfig(tracing_disabled=False)
+            
+            if self.modelProvider() is not None:
+                runConfig = RunConfig(tracing_disabled=False,model_provider=self.modelProvider())
+
+            logger.info(f"Running orchestrator {orchestratorId} with user input {user_input} and runConfig {runConfig}")
+
             orchestrator_result = await Runner.run(
                 orchestrator,
                 user_input,
-                run_config=RunConfig(
-                    tracing_disabled=False
-                )
+                run_config=runConfig
             )
 
             return orchestrator_result.final_output

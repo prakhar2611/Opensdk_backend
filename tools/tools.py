@@ -141,6 +141,11 @@ DEFAULT_FUNCTION_TOOLS = [
             "query": {
                 "type": "string",
                 "description": "The SQL query to execute on ClickHouse"
+            },
+            "database": {
+                "type": "string",
+                "description": "Optional database name. If not provided, uses the default database",
+                "required": False
             }
         },
         "function": run_query

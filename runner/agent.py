@@ -15,10 +15,10 @@ class AgentModelExecutor:
 
     def __init__(self):
         """Initialize the agent executor"""
-        # Check for OpenAI API key
-        if not os.getenv("OPENAI_API_KEY"):
-            logger.error("OPENAI_API_KEY not found in environment variables")
-            raise ValueError("OPENAI_API_KEY not found in environment variables")
+        # # Check for OpenAI API key
+        # if not os.getenv("OPENAI_API_KEY"):
+        #     logger.error("OPENAI_API_KEY not found in environment variables")
+        #     raise ValueError("OPENAI_API_KEY not found in environment variables")
         
         # Setup SSL bypass
         self.http_client = setup_ssl_bypass()

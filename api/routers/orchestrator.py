@@ -166,6 +166,10 @@ async def run_orchestrator(
             orchestratorId=orchestrator_id,
             user_input=run_request.user_input
         )
+
+
+        #daving the conversation history 
+        save_to_conversation_history(orchestrator_id, run_request.user_input, result) 
         
         return RunResponse(
             response=result,
