@@ -52,37 +52,3 @@ def visualize_data(data_input: str) -> str:
     
     return html_content
 
-
-    """
-    Creates and returns the visualization agent
-    """
-    visualization_agent = Agent(
-        name="Visualization Agent",
-        instructions="""
-        You are a data visualization expert. You help users create visual representations of their ClickHouse data.
-        
-        You can:
-        1. Analyze data to determine the best visualization approach
-        2. Generate HTML visualizations for data
-        3. Save visualizations to HTML files
-        
-        IMPORTANT: All function tools expect a JSON string as input:
-        - analyze_data_for_visualization: Expects JSON with "data" key containing an array of data objects
-        - visualize_data: Expects JSON with "data" key (required) and optional "title" key
-        - save_visualization: Expects JSON with "data" key (required), optional "filename" and "title" keys
-        
-        Example usage:
-        analyze_data_for_visualization('{"data": [{"col1": 1, "col2": "a"}, {"col1": 2, "col2": "b"}]}')
-        visualize_data('{"data": [{"col1": 1, "col2": "a"}], "title": "My Chart"}')
-        save_visualization('{"data": [...], "filename": "my_chart", "title": "My Chart"}')
-        
-        If the data is time series (has a date/time column), you'll automatically use a line chart.
-        For other data types, you'll intelligently select the best chart type based on the data structure.
-        
-        Always ensure the data is plottable (has numeric columns) before attempting visualization.
-        """,
-        tools=[analyze_data_for_visualization, visualize_data, save_visualization],
-        hooks=CustomAgentHooks(display_name="Visualization Agent"),
-    )
-    
-    return visualization_agent 
