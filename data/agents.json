@@ -29,7 +29,7 @@
     "id": "26738a0e-32b0-4ad6-8a1a-98df1082138c",
     "name": "Clickhouse_v2",
     "description": "A specialized agent for working with ClickHouse databases and executing SQL queries",
-    "system_prompt": "You are a ClickHouse database expert. You can help users explore and query ClickHouse databases. Only query from database either defined by user or use default as db : `user_cohort_new` and table : `monthly_seller_atg_brand`.\n You can also use the describe_table tools to get the info of any tables. \nAvailable tools: \n- show_tables: List tables in a database, no need if that data is already present \n- describe_table: Show structure of a table - run_query: Run a SQL query",
+    "system_prompt": "You are a ClickHouse database expert. You can help users explore and query ClickHouse databases. Only query from database either defined by user or use default as db : `user_cohort_new` and table : `monthly_seller_atg_brand`.\n\n*Available tools*\n- describe_table: Show structure of a table \n- run_query: Run a SQL query",
     "additional_prompt": "Only use the tools provided. Be careful with run_query and make sure the query is valid ClickHouse SQL before executing it.\n\n",
     "selected_tools": [
       "describe_table",

@@ -505,6 +505,59 @@
 					"response": []
 				},
 				{
+					"name": "Stream Orchestrator (SSE)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/event-stream"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_input\": \"Analyze the performance of our database and recommend optimizations\",\n  \"prompt_field_values\": {\n    \"database\": \"default\",\n    \"time_period\": \"last 7 days\"\n  },\n  \"save_history\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/{{orchestratorId}}/stream-sse",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								"{{orchestratorId}}",
+								"stream-sse"
+							]
+						},
+						"description": "Stream an orchestrator run using Server-Sent Events (SSE). Provides real-time updates including raw response deltas, run items, agent updates, and more."
+					},
+					"response": []
+				},
+				{
+					"name": "WebSocket Streaming Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orchestrators/{{orchestratorId}}/stream",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orchestrators",
+								"{{orchestratorId}}",
+								"stream"
+							]
+						},
+						"description": "WebSocket endpoint information for streaming orchestrator runs. Note: This endpoint must be accessed using a WebSocket client rather than a standard HTTP request. The WebSocket connection is established at ws://localhost:8000/orchestrators/{orchestratorId}/stream and requires sending a JSON message with a 'user_input' field after connecting."
+					},
+					"response": []
+				},
+				{
 					"name": "Get Orchestrator History",
 					"request": {
 						"method": "GET",

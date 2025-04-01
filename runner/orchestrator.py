@@ -1,7 +1,7 @@
 import os
-from typing import Dict, List, Any
+from typing import Dict, List, Any, AsyncIterator
 
-from agents import Agent, RunConfig, Runner, function_tool
+from agents import Agent, RunConfig, Runner, function_tool, RunResultStreaming, StreamEvent
 
 from runner.modelProvider import CustomModelProvider
 from .agent import AgentModelExecutor
@@ -24,6 +24,7 @@ class OrchestratorModelExecutor:
         self.http_client = setup_ssl_bypass()
         logger.info("SSL bypass setup completed for agent executor")
         self.isOpenAI = os.getenv("IS_OPENAI") == "true"
+        self.last_run_result = None
 
     def modelProvider(self):
         if self.isOpenAI is False:
@@ -107,7 +108,7 @@ class OrchestratorModelExecutor:
             runConfig = RunConfig(tracing_disabled=False)
             
             if self.modelProvider() is not None:
-                runConfig = RunConfig(tracing_disabled=False,model_provider=self.modelProvider())
+                runConfig = RunConfig(tracing_disabled=False, model_provider=self.modelProvider())
 
             logger.info(f"Running orchestrator {orchestratorId} with user input {user_input} and runConfig {runConfig}")
 
@@ -117,7 +118,61 @@ class OrchestratorModelExecutor:
                 run_config=runConfig
             )
 
+            self.last_run_result = orchestrator_result.final_output
             return orchestrator_result.final_output
         except Exception as e:
             logger.error(f"Error running orchestrator {orchestratorId}: {str(e)}")
             raise
+
+    async def stream_orchestrator_run_by_id(self, orchestratorId: str, user_input: str) -> AsyncIterator[StreamEvent]:
+        """Stream the orchestrator run events
+        
+        Args:
+            orchestratorId: The ID of the orchestrator to run
+            user_input: The user input to process
+            
+        Yields:
+            StreamEvent objects containing run updates
+        """
+        logger.info(f"Streaming orchestrator {orchestratorId} with user input {user_input}")
+        try:
+            orchestrator_model = self.initialize_orchestrator_model(orchestratorId)
+            orchestrator = self.create_orchestrator_from_data(orchestrator_model)
+
+            runConfig = RunConfig(tracing_disabled=False)
+            
+            if self.modelProvider() is not None:
+                runConfig = RunConfig(tracing_disabled=False, model_provider=self.modelProvider())
+
+            logger.info(f"Streaming orchestrator {orchestratorId} with user input {user_input} and runConfig {runConfig}")
+
+            # Use the streamed version of run
+            streaming_result: RunResultStreaming = Runner.run_streamed(
+                orchestrator,
+                user_input,
+                run_config=runConfig
+            )
+            
+            # Yield all events from the stream
+            async for event in streaming_result.stream_events():
+                yield event
+                
+                # If it's the last event with final output, save it
+                if hasattr(event, "final_output") and event.final_output is not None:
+                    self.last_run_result = event.final_output
+            
+            # If we didn't get the final output from the events, get it from the result
+            if self.last_run_result is None and hasattr(streaming_result, "final_output"):
+                self.last_run_result = streaming_result.final_output
+                
+        except Exception as e:
+            logger.error(f"Error streaming orchestrator {orchestratorId}: {str(e)}")
+            raise
+
+    def get_last_run_result(self) -> Any:
+        """Get the result of the last run
+        
+        Returns:
+            The result of the last orchestrator run
+        """
+        return self.last_run_result

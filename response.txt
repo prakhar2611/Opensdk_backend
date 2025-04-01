@@ -1,0 +1,37 @@
+data: {"type": "start"}
+
+data: {"type": "agent_updated_stream_event", "new_agent": "Basic Db Agent"}
+
+data: {"type": "raw_response_event", "data": {"response": {"id": "__fake_id__", "created_at": 1743319243.3410509, "model": "claude-3-7-sonnet-20250219", "object": "response", "output": [], "parallel_tool_calls": false, "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null}, "type": "response.created"}}
+
+data: {"type": "raw_response_event", "data": {"item": {"id": "__fake_id__", "content": [], "role": "assistant", "status": "in_progress", "type": "message"}, "output_index": 0, "type": "response.output_item.added"}}
+
+data: {"type": "raw_response_event", "data": {"content_index": 0, "item_id": "__fake_id__", "output_index": 0, "part": {"annotations": [], "text": "", "type": "output_text"}, "type": "response.content_part.added"}}
+
+data: {"type": "raw_response_event", "data": {"delta": "I'll help"}}
+
+data: {"type": "raw_response_event", "data": {"delta": " you analyze the trend for seller 6771 "}}
+
+data: {"type": "raw_response_event", "data": {"delta": "from the monthly_seller_"}}
+
+data: {"type": "raw_response_event", "data": {"delta": "atg_brand table. Let's start by"}}
+
+data: {"type": "raw_response_event", "data": {"delta": " understanding the table structure and the data,"}}
+
+data: {"type": "raw_response_event", "data": {"delta": " then visualize the trends."}}
+
+data: {"type": "raw_response_event", "data": {"delta": "\n\nFirst, let's look at"}}
+
+data: {"type": "raw_response_event", "data": {"delta": " the table description:"}}
+
+data: {"type": "raw_response_event", "data": {"content_index": 0, "item_id": "__fake_id__", "output_index": 0, "part": {"annotations": [], "text": "I'll help you analyze the trend for seller 6771 from the monthly_seller_atg_brand table. Let's start by understanding the table structure and the data, then visualize the trends.\n\nFirst, let's look at the table description:", "type": "output_text"}, "type": "response.content_part.done"}}
+
+data: {"type": "raw_response_event", "data": {"item": {"arguments": "{\"input\": \"DESCRIBE monthly_seller_atg_brand;\"}", "call_id": "toolu_017abd3jhcpvpHrBSKPo8dsJ", "name": "Clickhouse_v2", "type": "function_call", "id": "__fake_id__"}, "output_index": 1, "type": "response.output_item.added"}}
+
+data: {"type": "raw_response_event", "data": {"delta": "{\"input\": \"DESCRIBE monthly_seller_atg_brand;\"}"}}
+
+data: {"type": "raw_response_event", "data": {"item": {"arguments": "{\"input\": \"DESCRIBE monthly_seller_atg_brand;\"}", "call_id": "toolu_017abd3jhcpvpHrBSKPo8dsJ", "name": "Clickhouse_v2", "type": "function_call", "id": "__fake_id__"}, "output_index": 1, "type": "response.output_item.done"}}
+
+data: {"type": "raw_response_event", "data": {"item": {"id": "__fake_id__", "content": [{"annotations": [], "text": "I'll help you analyze the trend for seller 6771 from the monthly_seller_atg_brand table. Let's start by understanding the table structure and the data, then visualize the trends.\n\nFirst, let's look at the table description:", "type": "output_text"}], "role": "assistant", "status": "completed", "type": "message"}, "output_index": 0, "type": "response.output_item.done"}}
+
+data: {"type": "raw_response_event", "data": {"response": {"id": "__fake_id__", "created_at": 1743319243.3410509, "model": "claude-3-7-sonnet-20250219", "object": "response", "output": [{"id": "__fake_id__", "content": [{"annotations": [], "text": "I'll help you analyze the trend for seller 6771 from the monthly_seller_atg_brand table. Let's start by understanding the table structure and the data, then visualize the trends.\n\nFirst, let's look at the table description:", "type": "output_text"}], "role": "assistant", "status": "completed", "type": "message"}, {"arguments": "{\"input\": \"DESCRIBE monthly_seller_atg_brand;\"}", "call_id": "toolu_017abd3jhcpvpHrBSKPo8dsJ", "name": "Clickhouse_v2", "type": "function_call", "id": "__fake_id__"}], "parallel_tool_calls": false, "temperature": null, "tool_choice": "auto", "tools": [], "top_p": null, "usage": {"input_tokens": 728, 
