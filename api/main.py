@@ -27,6 +27,7 @@ from tools.tools import get_available_tools, get_tool_by_name
 from api.routers.agent import router as agent_router
 from api.routers.orchestrator import router as orchestrator_router
 from api.routers.conversation import router as conversation_router
+from api.routers.streaming import router as streaming_router
 
 # Load environment variables
 load_dotenv()
@@ -54,6 +55,7 @@ os.makedirs("data", exist_ok=True)
 app.include_router(agent_router)
 app.include_router(orchestrator_router)
 app.include_router(conversation_router)
+app.include_router(streaming_router)
 
 # Health check endpoint
 @app.get("/health")

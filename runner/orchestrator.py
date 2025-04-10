@@ -143,6 +143,7 @@ class OrchestratorModelExecutor:
             
             if self.modelProvider() is not None:
                 runConfig = RunConfig(tracing_disabled=False, model_provider=self.modelProvider())
+            
 
             logger.info(f"Streaming orchestrator {orchestratorId} with user input {user_input} and runConfig {runConfig}")
 
